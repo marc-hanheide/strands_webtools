@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <meta http-equiv="refresh" content="300">
 
     <!-- The default styling is provided by http://getbootstrap.com -->
     <link href="css/bootstrap.css" rel="stylesheet">

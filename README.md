@@ -50,6 +50,8 @@ sudo chmod 644 /usr/lib/apache2/modules/mod_proxy{_wstunnel,}.so
 echo -e "# Depends: proxy\nLoadModule proxy_wstunnel_module /usr/lib/apache2/modules/mod_proxy_wstunnel.so" | sudo tee -a /etc/apache2/mods-available/proxy_wstunnel.load
 
       ```
+  * Afterwards, run:  `sudo a2enmod proxy* rewrite*`
+      
 ## ROS setup
 The marathon branch requires STRAND's own version of rosbridge_suite and mjpeg_server to added security features. Here's the rosinstall config:
 ```

@@ -11,7 +11,7 @@
 		args="messages /amcl_pose 1 /webthrottle/amcl_pose" />
 	<node 	name="throttle_mile"
 		pkg="topic_tools" type="throttle" 
-		args="messages /mileage 0.1 /webthrottle/mileage" />
+		args="messages /odom_mileage 0.1 /webthrottle/mileage" />
 	<node   name="web_mux" 
 		pkg="topic_tools" type="mux"
 		args="/webthrottle/image /webthrottle/head/image /webthrottle/people/image /webthrottle/depth/image" />

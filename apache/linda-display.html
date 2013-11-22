@@ -117,7 +117,7 @@
 	{
 		$.getJSON('http://lcas.lincoln.ac.uk/linda-stats/patrol_run.json', function (json) {
 			var s=json.length
-	     	$('#status').html('In her current run, Linda has been travelling <b>'+json[s-1].distance + ' metres</b> so far. The total autonomous runtime in this tour is <b>'+json[s-1].run_duration/3600+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.');
+	     	$('#status').html('<font size="4">In her current run, Linda has been travelling <b>'+json[s-1].distance + ' metres</b> so far. The total autonomous runtime in this tour is <b>'+json[s-1].run_duration/3600+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.</font>');
 	});      
 	}
 
@@ -130,8 +130,8 @@
         divID : 'mjpeg',
         host : hostname,
         port : '80/linda/video',
-        width : 560,
-        height : 420,
+        width : 560*0.5,
+        height : 420*0.5,
         topic : '/image_blurrer/output_video'
         });
         
@@ -203,147 +203,43 @@
   </head>
 
   <body onload="init()">
-	<div id="fb-root"></div>
-	<script>(function(d, s, id) {
-	  var js, fjs = d.getElementsByTagName(s)[0];
-	  if (d.getElementById(id)) return;
-	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
-	  fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-	</script>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <a class="navbar-brand" href="#"><img src="http://www.lincoln.ac.uk/home/media/universityoflincoln/styleassets/images/logo-white.png"/></a>      
-      <ul class="nav pull-right">
-        <li class="active"><a href="marathon.html">Marathon</a></li>
-        <!--<li><a href="navigation.html">Autonomous</a></li>-->
-      </ul>
-    </div>
     <div class="container">
       <div class="row">
-	<H1><font color="red">BETA WEBSITE, subject to continuous modification and only available occasionally for now</font></H1>
-      </div>
-      <br/>
-      <div class="row">
       <H1>
-        Welcome to Linda's homepage!
+        Welcome to Linda's home!
       </H1>
-      
-      <div class="col-span-6">
-        <p>
-          Hello, my name is Linda. I am a research robot. I am situated in
-          the <a href="http://lcas.lincoln.ac.uk">Centre for Autonomous Research</a> at
-          the <a href="http://www.lincoln.ac.uk">University of Lincoln</a>,
-          UK. My current job is to patrol our research lab. Below you can find some information of
-          what I am actually doing.
-          </p>
-        
-        <p>
-          In general, I am a research platform in the context of
-          the <a href="http://www.strands-project.eu">STRANDS</a> project
-          (Spatio-Temporal Representations and Activities for Cognitive Control
-          in Long-Term Scenarios), a 4-year EU FP7 Integrating Project.
-        </p>
-      </div>
-      <div class="col-span-6">
-	<iframe width="400" height="225" src="//www.youtube.com/embed/videoseries?list=PLPY1_sJa70XA7bH05Y-WEJ0zXOGvpooYe" frameborder="0" allowfullscreen></iframe>
-	<p>Linda in action in our lab.</p>
-      </div>
-      </div>
-
-      <!--<h1><small>Simple keyboard control</small></h1>
-      <div class="row">
-        <div class="col-span-6">
-          <h2><small>Robot</small></h2>
-          <ul>
-            <li><strong>w/s</strong>  to move forward and backward</li>
-            <li><strong>a/d</strong>  to move left and right</li>
-          </ul>
-        </div>
-        <div class="col-span-6">
-          <h2><small>PTU</small></h2>
-          <ul>
-            <li><strong>j/k</strong>  to move the PTU down and up</li>
-            <li><strong>h/l</strong>  to move the PTU left and right</li>
-            <li><strong>o</strong>    to move the PTU to the default pose</li>
-          </ul>
-        </div>
-      </div>
-	-->
-      <!-- <div id="speed-label"></div>
-      <div id="speed-slider"></div>-->
-      <br/>
-      <div class="row" id="misc-data">
-	<div class="col-span-6">
-	<h1><small>Linda's Current Patrol Tour</small></h1>
-	<p><div id="status">Status</div></p>
+      	<div class="col-span-3">
+	  <p>
+          Follow Linda live on the internet at <b>http://lcas.lincoln.ac.uk/linda/linda-mobile.html</b> or scan this code:
+	  <br/>
+	  <img src="qrcode.png"/>
+	  <img src="http://strands.acin.tuwien.ac.at/logos/strands2.png"/></p>
 	</div>
-	<div class="col-span-6">
-	<h1><small>Linda's Total Lifetime Mileage</small></h1>
-        <p><div id="mileage">Mileage</div></p>
-	</div>        
-      </div>
-      <br/>
-	
-      <div class="row">
-        <div class="col-span-6">
-          <h1><small>3D map</small></h1>
-          <div id="threed-map"></div>
-	  <i>Use your mouse to navigate the map. This features requires your browser to support <a href="http://get.webgl.org/">WebGL</a>. Due to a high load on the server you may have to reload this page, if you cannot see the robot on its map here. Linda has mapped out this space before and can now autonomously move about to act as a security guard. She is patrolling day and night, autonomously goes to recharge herself if needed, and resumes her patrol round when fully charged.</i>
+
+      <div class="col-span-6">
+        <p>
+	<font size="4">Researchers here at the "Centre for Autonomous Systems" of  the University of Lincoln are studying how mobile robots can learn from long-term experience to provide service in security and care scenarios. As part of the European <a href="http://www.strands-project.eu">STRANDS project</a>, they contribute to the development of robots that are able to operate autonomously, without the need of human intervention, in regular indoor environments like offices and homes over long periods of time. 
+</p>
+<p>
+The 4 year project involving six academic partners from Lincoln, Birmingham, Leeds, Vienna, Aachen, and Stockholm has started in April this year. The <a href="http://www.eu-robotics.net/eurobotics-week/">EU robotics week</a> (25th - 29th November 2013) is the project's first major milestone to show their robots working continously and autonomously at the different sites. 
+Lincoln's robot "Linda" is patrolling its surrounding 24/7 during this week as part of the <a href="http://strands.acin.tuwien.ac.at/marathon.html">"STRANDS robot marathon"</a>. Linda faces the challenge to safely and reliably navigate an environment that is populated by people and not customised to a robot's needs. She will have to cope with changes that occur, such as lights being turned on and off, objects moved about, and people walking around. 
+</p>
+<p>
+During the whole week Linda will be streaming live to the internet where the  public can follow Linda on her patrol routes every day and night. Linda can be seen patrolling, charging autonomously, and visiting checkpoints that have been defined by the researchers. While this is the first step towards autonomous robots that can assist and help people, the STRANDS project ultimately aims to deploy robots like Linda to other sites where they will complement human guards to increase security and help staff in care facilities, facilitated by the project partners G4S and AAF, respectively.</font>
+          </p>
         </div>
-        <div class="col-span-6">
+
+        <div class="col-span-3">
+   	 <h3>Linda's Current Tour</h3>
+  	 <p><font size="4"><div id="status">Status</div></font></p>
           <h1><small>Robot live cam</small></h1>
           <div id="mjpeg"></div>
 	  <i>The video is blurred to protect the privacy of our staff in the L-CAS research lab.</i>
         </div>
       </div>
 
-
-      <!-- Pose Table
-      <div class="row" id="pose-data">
-        <div class="col-span-12">
-          <h1><small>Robot's Pose</small></h1>
-          <table id="poses" class="table table-condensed">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Position</th>
-                <th>Orientation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
- -->
       
 
-      <div class="row">
-	<div class="col-span-2">
-		<a href="http://strands.acin.tuwien.ac.at/"><img src="http://strands.acin.tuwien.ac.at/logos/strands2.png"/></a>
-		<p>
-			<div class="fb-like" data-href="http://lcas.lincoln.ac.uk/linda/marathon.html" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-			<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-			<g:plusone></g:plusone>
-			<a href="https://twitter.com/share" class="twitter-share-button" data-via="LindaStrands" data-related="strands_project" data-dnt="true">Tweet</a>
-			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-		</p>
-	</div>
-	<div class="col-span-4">
-		<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/LindaStrands" data-widget-id="402372847793741825">Tweets by @LindaStrands</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-	</div>
-	<div class="col-span-4">
-<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/strands_project" data-widget-id="402373765784293377">Tweets by @strands_project</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</div>
-	<div class="col-span-2">
-		<iframe src="https://mapsengine.google.com/map/embed?mid=z6XG8OR_zLGs.kbF9OSRyk6dQ" width="220" height="250"></iframe>
-	</div>
-      </div>
 
 
     </div>

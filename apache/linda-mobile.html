@@ -80,14 +80,14 @@
         + '<td>' + position + '</td>'
         + '<td>' + orientation + '</td>');
         });
-
+/*
       var mileTopic = new ROSLIB.Topic({
       ros         : ros,
       name        : '/webthrottle/mileage',
       messageType : 'std_msgs/Float32'
       });
 
-	/*
+	
       // Subscribes to the robot's pose. When rosbridge receives the pose
       // message from ROS, it forwards the message to roslibjs, which calls this
       // callback.
@@ -167,7 +167,7 @@
 	<div class="col-span-6">
           <h1><small>Robot live cam</small></h1>
           <div id="mjpeg"></div>
-	  <i>The video is blurred to protect the privacy of our staff in the L-CAS research lab.</i>
+	  <i>The video is blurred to protect the privacy of our staff in the L-CAS research lab. It is known that some version of firefox do not automatically update this video stream. Please use <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a> or reload this page.</i>
 	</div>        
       </div>
       <br/>

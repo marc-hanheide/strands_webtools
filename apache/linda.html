@@ -88,7 +88,6 @@
         + '<td>' + position + '</td>'
         + '<td>' + orientation + '</td>');
         });
-*/
       var mileTopic = new ROSLIB.Topic({
       ros         : ros,
       name        : '/webthrottle/mileage',
@@ -109,6 +108,7 @@
       $('#mileage').html(mileage);
         });
 
+*/
 
 
 	var myVar=setInterval(function(){myStatusTimer()},10000);
@@ -284,10 +284,10 @@
 	<h1><small>Linda's Current Patrol Tour</small></h1>
 	<p><div id="status">Status</div></p>
 	</div>
-	<div class="col-span-6">
+<!--	<div class="col-span-6">
 	<h1><small>Linda's Total Lifetime Mileage</small></h1>
         <p><div id="mileage">Mileage</div></p>
-	</div>        
+	</div> -->        
       </div>
       <br/>
 	
@@ -300,7 +300,7 @@
         <div class="col-span-6">
           <h1><small>Robot live cam</small></h1>
           <div id="mjpeg"></div>
-	  <i>The video is blurred to protect the privacy of our staff in the L-CAS research lab.</i>
+	  <i>The video is blurred to protect the privacy of our staff in the L-CAS research lab. It is known that some version of firefox do not automatically update this video stream. Please use <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a> or reload this page.</i>
         </div>
       </div>
 

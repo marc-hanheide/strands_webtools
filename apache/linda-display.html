@@ -9,6 +9,7 @@
     <meta charset="utf-8" />
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <META HTTP-EQUIV="refresh" CONTENT="300">
 
     <!-- The default styling is provided by http://getbootstrap.com -->
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -50,66 +51,6 @@
       * Setup all GUI elements when the page is loaded.
       */
       function init() {
-      // Connecting to ROS.
-      var ros = new ROSLIB.Ros({
-      url : 'ws://'+hostname+'/linda/rosws'
-      });
-
- 
-      // ----------------------------------------------------------------------
-      // Subscribing to the robot's Pose
-      // ----------------------------------------------------------------------
-
-      // The ROSLIB.Topic handles subscribing and publishing a ROS topic. This
-      // topic interacts with the /robot_pose topic, published by the robot.
-      var poseTopic = new ROSLIB.Topic({
-      ros         : ros,
-      name        : '/webthrottle/amcl_pose',
-      messageType : 'geometry_msgs/PoseWithCovarianceStamped'
-      });
-
-      // Subscribes to the robot's pose. When rosbridge receives the pose
-      // message from ROS, it forwards the message to roslibjs, which calls this
-      // callback.
-	/*
-      poseTopic.subscribe(function(message) { 
-      // Formats the pose for outputting.
-      var now = new Date();
-      var position = 'x: ' + message.pose.pose.position.x
-      + ', y: ' + message.pose.pose.position.y
-      + ', z: 0.0';
-      var orientation = 'x: ' + message.pose.pose.orientation.x
-      + ', y: ' + message.pose.pose.orientation.y
-      + ', z: ' + message.pose.pose.orientation.z
-      + ', w: ' + message.pose.pose.orientation.w;
-      // Prepends a row to the "poses" table with the formatted pose.
-      $('#poses > tbody > tr:first').after('<tr>'
-        + '<td>' + now.toLocaleTimeString() + '</td>'
-        + '<td>' + position + '</td>'
-        + '<td>' + orientation + '</td>');
-        });
-*/
-      var mileTopic = new ROSLIB.Topic({
-      ros         : ros,
-      name        : '/webthrottle/mileage',
-      messageType : 'std_msgs/Float32'
-      });
-
-      // Subscribes to the robot's pose. When rosbridge receives the pose
-      // message from ROS, it forwards the message to roslibjs, which calls this
-      // callback.
-      mileTopic.subscribe(function(message) {
-      // Formats the pose for outputting.
-      var mileage = 'current lifetime mileage: ' + message.data + ' metres travelled';
-      var status='';
-      
-
-
-
-      $('#mileage').html(mileage);
-        });
-
-
 
 	var myVar=setInterval(function(){myStatusTimer()},10000);
 
@@ -135,69 +76,6 @@
         topic : '/image_blurrer/output_video'
         });
         
-        
-        // ----------------------------------------------------------------------
-        // Rendering the robot in 3D
-        // ----------------------------------------------------------------------
-
-        // Create the scene manager and view port for the 3D world.
-        var viewer3D = new ROS3D.Viewer({
-        divID      : 'threed-map',
-        width      : 560,
-        height     : 420,
-        antialias  : true,
-	cameraPose : {x: 5, y: 0, z: 15},
-        background : '#EEEEEE'
-        });
-
-        // Create a TF client that subscribes to the fixed frame.
-        var tfClient = new ROSLIB.TFClient({
-        ros          : ros,
-        angularThres : 0.1,
-        transThres   : 0.1,
-        rate         : 1.0,
-        fixedFrame   : '/map'
-        });
-
-
-        // Add the URDF model of the robot.
-        var urdfClient = new ROS3D.UrdfClient({
-        ros        : ros,
-        tfClient   : tfClient,
-        rootObject : viewer3D.scene
-        });
-
-        var colorMaterial = ROS3D.makeColorMaterial(1, 0, 0,0.5);
-
-        // Track robot pose with an arrow
-        var arrowNode = new ROS3D.SceneNode({
-        tfClient : tfClient,
-        frameID  : '/base_link',
-        object   : new ROS3D.Arrow({
-        length : 0.3,
-        material : colorMaterial
-        }),        
-        });
-
-        viewer3D.scene.add(arrowNode);
-
-
-        // ----------------------------------------------------------------------
-        // Rendering the map in 3D
-        // ----------------------------------------------------------------------
-
-        // Add the Occupancy Grid map.
-        var grid = new ROS3D.OccupancyGridClient({
-        ros        : ros,
-        tfClient   : tfClient,
-        rootObject : viewer3D.scene
-        });
-        grid.on('change', function() {
-        // Change the opacity level.
-        grid.currentGrid.children[0].material.transparent = false;
-        grid.currentGrid.children[0].material.opacity = 0.85;
-        grid.currentGrid.children[0].material.needsUpdate = true;
-        });
         }
     </script>
   </head>

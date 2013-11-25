@@ -134,6 +134,16 @@
         height : 420,
         topic : '/image_blurrer/output_video'
         });
+
+        var webcam = new MJPEGCANVAS.Viewer({
+        divID : 'mjpeg_webcam',
+        host : hostname,
+        port : '80/linda/video',
+        width : 280*0.9,
+        height : 210*0.9,
+        topic : '/webthrottle/webcam/image'
+        });
+
         
         
         // ----------------------------------------------------------------------
@@ -250,9 +260,16 @@
           (Spatio-Temporal Representations and Activities for Cognitive Control
           in Long-Term Scenarios), a 4-year EU FP7 Integrating Project.
         </p>
-	<h1><small>Linda's Current Patrol Tour</small></h1>
-	<p><div id="status">Status</div></p>
-
+	<div class="row">
+	<div class="col-span-6">
+  	  <h3>Linda's Current Tour</h3>
+	  <p><div id="status">Status</div></p>
+	</div>
+	<div class="col-span-6">
+          <div id="mjpeg_webcam"></div>
+	  <i>Live view of Linda's charging station (updated every ~3 seconds)</i>
+	</div>
+	</div>
       </div>
       <div class="col-span-6">
 	<iframe width="600" height="338" src="//www.youtube.com/embed/videoseries?list=PLPY1_sJa70XA7bH05Y-WEJ0zXOGvpooYe&autoplay=1" frameborder="0" allowfullscreen></iframe>

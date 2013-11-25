@@ -1,1 +1,1 @@
-topic_wl: ['/image_blurrer/output_video']
+topic_wl: ['/image_blurrer/output_video','/webthrottle/webcam/image']

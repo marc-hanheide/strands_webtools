@@ -8,6 +8,7 @@
 	<Directory /opt/strands/lib/www>
 		DirectoryIndex linda-strands.html
 		Options -Indexes		
+	
 	</Directory>
 	#ServerName marcs-pc
 	RewriteEngine On
@@ -37,6 +38,9 @@
 
 		Options ExecCGI -MultiViews +SymLinksIfOwnerMatch
 	</Directory>
+
+	RewriteCond %{HTTP_USER_AGENT} "android|blackberry|googlebot-mobile|iemobile|ipad|iphone|ipod|opera mobile|palmos|webos" [NC]
+	RewriteRule ^/linda/linda.html$ /linda/linda-mobile.html [L,R=302]
 
 </VirtualHost>
 

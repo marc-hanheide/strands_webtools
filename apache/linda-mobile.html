@@ -80,7 +80,7 @@
 	{
 		$.getJSON('http://lcas.lincoln.ac.uk/linda-stats/patrol_run.json', function (json) {
 			var s=json.length
-	     	$('#status').html('In her current run, Linda has been travelling <b>'+json[s-1].distance + ' metres</b> so far. The total autonomous runtime in this tour is <b>'+json[s-1].run_duration/3600+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.');
+	     	$('#status').html('In her current run, Linda has been travelling <b>'+ (json[s-1].distance/1000).toFixed(3) + ' kilometres</b> so far. The total autonomous runtime in this tour is <b>'+(json[s-1].run_duration/3600).toFixed(2)+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.');
 	});      
 	}
 

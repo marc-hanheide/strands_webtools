@@ -57,58 +57,29 @@
 
  
       // ----------------------------------------------------------------------
-      // Subscribing to the robot's Pose
+      // Subscribing to the robot's Battery
       // ----------------------------------------------------------------------
 
       // The ROSLIB.Topic handles subscribing and publishing a ROS topic. This
       // topic interacts with the /robot_pose topic, published by the robot.
-      var poseTopic = new ROSLIB.Topic({
+      var batteryTopic = new ROSLIB.Topic({
       ros         : ros,
-      name        : '/webthrottle/amcl_pose',
-      messageType : 'geometry_msgs/PoseWithCovarianceStamped'
+      name        : '/webthrottle/battery_state',
+      messageType : 'scitos_msgs/BatteryState'
       });
 
-      // Subscribes to the robot's pose. When rosbridge receives the pose
-      // message from ROS, it forwards the message to roslibjs, which calls this
-      // callback.
-	/*
-      poseTopic.subscribe(function(message) { 
-      // Formats the pose for outputting.
-      var now = new Date();
-      var position = 'x: ' + message.pose.pose.position.x
-      + ', y: ' + message.pose.pose.position.y
-      + ', z: 0.0';
-      var orientation = 'x: ' + message.pose.pose.orientation.x
-      + ', y: ' + message.pose.pose.orientation.y
-      + ', z: ' + message.pose.pose.orientation.z
-      + ', w: ' + message.pose.pose.orientation.w;
-      // Prepends a row to the "poses" table with the formatted pose.
-      $('#poses > tbody > tr:first').after('<tr>'
-        + '<td>' + now.toLocaleTimeString() + '</td>'
-        + '<td>' + position + '</td>'
-        + '<td>' + orientation + '</td>');
-        });
-      var mileTopic = new ROSLIB.Topic({
-      ros         : ros,
-      name        : '/webthrottle/mileage',
-      messageType : 'std_msgs/Float32'
+      // Subscribes to the robot's battery state. 
+      batteryTopic.subscribe(function(message) { 
+	var chargingText='';
+	if (message.charging) {
+		chargingText='Linda is currently <b>recharging</b> at a current of '+(-message.current.toFixed(1))+' Amperes. Her current charge level is <b>' + message.lifePercent + '%</b>. She will start patrolling again when charge level reaches 95%.';
+	} else {
+		chargingText='Linda is currently <b>running on battery</b> drawing a current of '+(message.current.toFixed(1))+' Amperes. Her current charge level is <b>' + message.lifePercent + '%</b>. She will go to recharge again when charge level drops to 40%.';
+	}
+
+      	$('#battery').html(chargingText);
       });
 
-      // Subscribes to the robot's pose. When rosbridge receives the pose
-      // message from ROS, it forwards the message to roslibjs, which calls this
-      // callback.
-      mileTopic.subscribe(function(message) {
-      // Formats the pose for outputting.
-      var mileage = 'current lifetime mileage: ' + message.data + ' metres travelled';
-      var status='';
-      
-
-
-
-      $('#mileage').html(mileage);
-        });
-
-*/
 
 
 	var myVar=setInterval(function(){myStatusTimer()},10000);
@@ -117,7 +88,7 @@
 	{
 		$.getJSON('http://lcas.lincoln.ac.uk/linda-stats/patrol_run.json', function (json) {
 			var s=json.length
-	     	$('#status').html('In her current run, Linda has been travelling <b>'+json[s-1].distance + ' metres</b> so far. The total autonomous runtime in this tour is <b>'+json[s-1].run_duration/3600+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.');
+	     	$('#status').html('In her current run, Linda has been travelling <b>'+ (json[s-1].distance/1000).toFixed(3) + ' kilometres</b> so far. The total autonomous runtime in this tour is <b>'+(json[s-1].run_duration/3600).toFixed(2)+' hour(s)</b>. <b>' + json[s-1].successful_waypoints + ' waypoints</b> have been successfully visited during this tour.');
 	});      
 	}
 
@@ -264,6 +235,7 @@
 	<div class="col-span-6">
   	  <h3>Linda's Current Tour</h3>
 	  <p><div id="status">Status</div></p>
+	  <p><div id="battery">Status</div></p>
 	</div>
 	<div class="col-span-6">
           <div id="mjpeg_webcam"></div>

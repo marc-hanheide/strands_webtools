@@ -8,4 +8,7 @@
 	<node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_republisher" />
 	<node pkg="image_blurrer" type="image_blurrer_node" name="image_blurrer" />
 	<node name="web_publisher" pkg="waypoint_patroller" type="web_publisher.py" args="-d linda -t 10" />
+	<node 	name="throttle_battery"
+		pkg="topic_tools" type="throttle" 
+		args="messages /battery_state 0.1 /webthrottle/battery_state" />
 </launch>

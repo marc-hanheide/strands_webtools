@@ -62,13 +62,13 @@
 
       // Subscribes to the robot's battery state. 
       batteryTopic.subscribe(function(message) { 
-	var estChargeTime=5*(95-message.lifePercent);
-	var estDischargeTime=11*(message.lifePercent-40);
+	var estChargeTime=5*(85-message.lifePercent);
+	var estDischargeTime=11*(message.lifePercent-30);
 	var chargingText='';
 	if (message.charging) {
-		chargingText='Linda is currently <b>recharging</b> at a current of '+(-message.current.toFixed(1))+' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>. She will start patrolling again when charging level reaches 95% (in approx. '+estChargeTime+' minutes).';
+		chargingText='Linda is currently <b>recharging</b> at a current of '+(-message.current.toFixed(1))+' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>. She will start patrolling again when charging level reaches 85% (in approx. '+estChargeTime+' minutes).';
 	} else {
-		chargingText='Linda is currently <b>running on battery</b> drawing a current of '+(message.current.toFixed(1))+' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>. She will go to recharge again when charging level drops to 40% (approx. '+estDischargeTime+' minutes of operation left).';
+		chargingText='Linda is currently <b>running on battery</b> drawing a current of '+(message.current.toFixed(1))+' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>. She will go to recharge again when charging level drops to 30% (approx. '+estDischargeTime+' minutes of operation left).';
 	}
       	$('#battery').html(chargingText);
       });

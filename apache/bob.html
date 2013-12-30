@@ -5,7 +5,19 @@
     <meta charset="utf-8" />
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
+        <style>
+          p 
+          {
+          padding-bottom:0.5cm;
+          }
 
+      #map-canvas {
+      height: 320px;
+      width: 256px;
+      margin: 0px;
+      padding: 0px
+      }
+    </style>
     <!-- The default styling is provided by http://getbootstrap.com -->
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
@@ -183,117 +195,340 @@
         });
         }
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script>
+      var myVar=setInterval(function(){myStatusTimer()},10000);
+      
+	    function myStatusTimer()
+	    {
+		  $.getJSON('http://www.cs.bham.ac.uk/~burbrcjc/marathon.json', function (json) {
+			var s=json.length
+	    $('#status').html('<div>Current distance: <b>'+ (json[s-1].distance/1000).toFixed(3) + ' kilometres</b></div><div>Current runtime: <b>'+(json[s-1].run_duration/3600).toFixed(2)+' hour(s)</b></div><div>Visited waypoints: <b>' + json[s-1].successful_waypoints + '</b></div>');
+
+	    });      
+	    }
+
+
+        // json stuff
+        //      window.robot_stats=null;
+        var get_robot_stats = function (robot_name, URL, updateFunction) {
+            $.ajax({
+                url: URL,
+                cache: false,
+                crossDomain: true,
+                dataType: "json",
+                robot_name: robot_name
+            })
+                    .done(function (json) {
+                        json = json.contents
+                        console.log("JSON Data AJAX (" + this.robot_name +
+                                "): " + json.battery);
+//                    robot_stats = json
+                        updateFunction(json);
+                    });
+        }
+
+        // visualization stuff
+        var bhamTypeOptions = {
+            getTileUrl: function (coord, zoom) {
+                var normalizedCoord = getNormalizedCoord(coord, zoom);
+                if (!normalizedCoord) {
+                    return null;
+                }
+                return './map.jpg';
+            },
+            tileSize: new google.maps.Size(256, 256),
+            maxZoom: 0,
+            minZoom: 0,
+            //disableDefaultUI: true,
+            //mapTypeControl: false,
+            //draggable: false,
+            //scaleControl: false,
+            //scrollwheel: false,
+            //navigationControl: false,
+            //streetViewControl: false,
+            name: 'CS Building',
+            disableDefaultUI: true
+        };
+
+        var bhamMapType = new google.maps.ImageMapType(bhamTypeOptions);
+
+        var marker;
+        var oldmarker;
+        var map;
+        var line;
+
+        function initialize() {
+
+            var myLatlng = new google.maps.LatLng(0, 0);
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 0,
+                streetViewControl: false,
+                mapTypeControlOptions: {
+                    mapTypeIds: ['bham']
+                }
+            };
+
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+                    mapOptions);
+            map.mapTypes.set('bham', bhamMapType);
+            map.setMapTypeId('bham');
+
+            var myLatlng = new google.maps.LatLng(70.0, 63.0);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: 'Robot station'
+            });
+            /*
+            var contentString = '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    '</div>' +
+                    '<h3 id="firstHeading" class="firstHeading">Robot station</h3>' +
+                    '<div id="bodyContent">' +
+                    '<p>At the <b>robot station</b> Bob recharges its batteries</p>' +
+                    '</div>' +
+                    '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 120
+            });
+
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+           */
+        }
+
+        // Normalizes the coords that tiles repeat across the x axis (horizontally)
+        // like the standard Google map tiles.
+        function getNormalizedCoord(coord, zoom) {
+            var y = coord.y;
+            var x = coord.x;
+
+            // tile range in one direction range is dependent on zoom level
+            // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
+            var tileRange = 1 << zoom;
+
+            // don't repeat across y-axis (vertically)
+            if (y < 0 || y >= tileRange) {
+                return null;
+            }
+
+            // repeat across x-axis
+            if (x < 0 || x >= tileRange) {
+                x = (x % tileRange + tileRange) % tileRange;
+            }
+
+            return {
+                x: x,
+                y: y
+            };
+        }
+
+
+        function map_to_pixel(pose) {
+            var f = 0.05;
+            x = (pose.position.x + 17.25) / f;
+            y = (pose.position.y + 23.9) / f;
+
+            console.log("X:"+x+", Y:" + y);
+
+            return {
+                x: x,
+                y: y
+            };
+        }
+        function radiansToDegrees(rad) {
+          return rad / (Math.PI / 180);
+         }
+
+
+        function pixel_to_latlng(pixel) {
+            var TILE_SIZE = 256;
+            var pixel_origin = TILE_SIZE / 2;                     
+            var pixelsPerLonDegree_ = TILE_SIZE / 360;
+            var pixelsPerLonRadian_ = TILE_SIZE / (2 * Math.PI);
+
+            var x = (pixel.x / 527) * TILE_SIZE;
+            var y = (pixel.y / 607) * TILE_SIZE;
+                                 
+                                 
+            var lng = (x - pixel_origin) / pixelsPerLonDegree_;
+            var latRadians = (y - pixel_origin) / pixelsPerLonRadian_;
+            var lat = radiansToDegrees(2 * Math.atan(Math.exp(latRadians)) -
+                      Math.PI / 2);
+
+            //var lng = ((pixel.x / 527) * 360.0)  - 180.0;
+            //var lat = ((pixel.y / 607) * 180.0)  -  90.0;
+            console.log("Lat:"+lat+", Long:" + lng);
+            var myLatlng = new google.maps.LatLng(lat,lng);
+                                 
+            return myLatlng;
+        }
+
+        function updateRobotPose(robot_stats) {
+
+            if (marker != null) {
+                oldmarker = marker;
+            }
+            var image = 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=B|99CCff|000000';
+            var pixel = map_to_pixel(robot_stats.pose);
+            var myLatlng = pixel_to_latlng(pixel);
+
+
+            marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: 'Bob',
+                icon: image
+            });
+
+
+            oldmarker.setMap(null);
+
+            $("#battery").text("Battery: " + robot_stats.battery + " %");
+            $("#charging").text("Charging: " + robot_stats.charging);
+            $("#bumper").text("Bumped: " + robot_stats.bumper);
+            $("#mileage").text("Overall mileage: " + (robot_stats.mileage/1000).toFixed(3) + " kilometres");
+
+
+
+        }
+
+        // Use the DOM setInterval() function to change the offset of the symbol
+        // at fixed intervals.
+        window.setInterval(function () {
+
+            get_robot_stats("Bob",
+                    "http://www.cs.bham.ac.uk/~burbrcjc/test/json.php?url=http://www.cs.bham.ac.uk/~burbrcjc/bob.json",
+                    updateRobotPose);
+        }, 1000);
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+
+
+    </script>
   </head>
 
   <body onload="init()">
 	<div id="fb-root"></div>
-	<!--<script>(function(d, s, id) {
-	  var js, fjs = d.getElementsByTagName(s)[0];
-	  if (d.getElementById(id)) return;
-	  js = d.createElement(s); js.id = id;
-	  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
-	  fjs.parentNode.insertBefore(js, fjs);
-	}(document, 'script', 'facebook-jssdk'));
-	</script>-->
+	<script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if
+	  (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src
+	  = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+	  fjs.parentNode.insertBefore(js, fjs); }(document, 'script',
+	  'facebook-jssdk'));
+	</script>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <a class="navbar-brand" href="#">Bob</a>      
-      <!--<a class="navbar-brand" href="#"><img src="http://www.birmingham.ac.uk/Images/website/logo.gif"/></a>-->      
-      <ul class="nav pull-right">
-        <!--<li class="active"><a href="marathon.html">Marathon</a></li>-->
-        <!--<li><a href="navigation.html">Autonomous</a></li>-->
-      </ul>
-    </div>
-    <div class="container">
-      <div class="row">
-	<H1><font color="red">BETA WEBSITE, subject to continuous modification and only available occasionally for now</font></H1>
-      <!--<h1><small>Simple keyboard control</small></h1>
-      <div class="row">
-        <div class="col-span-6">
-          <h2><small>Robot</small></h2>
-          <ul>
-            <li><strong>w/s</strong>  to move forward and backward</li>
-            <li><strong>a/d</strong>  to move left and right</li>
-          </ul>
-        </div>
-        <div class="col-span-6">
-          <h2><small>PTU</small></h2>
-          <ul>
-            <li><strong>j/k</strong>  to move the PTU down and up</li>
-            <li><strong>h/l</strong>  to move the PTU left and right</li>
-            <li><strong>o</strong>    to move the PTU to the default pose</li>
-          </ul>
-        </div>
-      </div>
-	-->
-      <!-- <div id="speed-label"></div>
-      <div id="speed-slider"></div>-->
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <a class="navbar-brand" href="#">Bob of Birmingham</a>
+    <!--<a class="navbar-brand" href="#"><img src="http://www.birmingham.ac.uk/Images/website/logo.gif"/></a>-->      
+    <ul class="nav pull-right">
+      <!--<li class="active"><a href="marathon.html">Marathon</a></li>-->
+    </ul>
+  </div>
+  <div class="container">
+    <div class="row">
+      <!-- 	    <H1> -->
+      <!--   <font color="red">BETA WEBSITE, subject to continuous modification and only available occasionally for now</font> -->
+      <!-- </H1> -->
+      
+      <!-- <br/> -->
+      
+      <H1>
+        Welcome to Bob's homepage!
+      </H1>
+      
+      <H4>
+        <p>
+          Hello, my name is Bob. I am a research robot. I am situated in
+          the <a href="http://cs.bham.ac.uk">School of Computer Science</a> at
+          the <a href="http://www.bham.ac.uk">University of Birmingham</a>,
+          UK. My current job is to patrol the lower ground floor of the
+          Computer Science building. Below you can find some information of
+          what I am actually doing.
+          </p>
+        
+        <p>
+          In general, I am a research platform in the context of
+          the <a href="http://www.strands-project.eu">STRANDS</a> project
+          (Spatio-Temporal Representations and Activities for Cognitive Control
+          in Long-Term Scenarios), a 4-year EU FP7 Integrating Project.
+        </p>
+
+        <p><strong>NEW FEATURE:</strong>  Try out <a href="http://www.cs.bham.ac.uk/research/projects/cogaff/bob" target="_blank">Bob's chatbot</a> (still under development) and talk with him about his current run, his next waypoint, and the marathon.
+        </p>
+      </H4>
+
       <br/>
-	<!--
+  
       <div class="row">
-	<div class="col-span-2">
-		<a href="http://strands.acin.tuwien.ac.at/"><img src="http://strands.acin.tuwien.ac.at/logos/strands2.png"/></a>
-		<p>
-			<div class="fb-like" data-href="http://lcas.lincoln.ac.uk/linda/marathon.html" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
-			<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-			<g:plusone></g:plusone>
-			<a href="https://twitter.com/share" class="twitter-share-button" data-via="LindaStrands" data-related="strands_project" data-dnt="true">Tweet</a>
-			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-		</p>
-	</div>
-	<div class="col-span-4">
-		<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/LindaStrands" data-widget-id="402372847793741825">Tweets by @LindaStrands</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-	</div>
-	<div class="col-span-4">
-<a class="twitter-timeline" data-dnt="true" href="https://twitter.com/strands_project" data-widget-id="402373765784293377">Tweets by @strands_project</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</div>
-	<div class="col-span-2">
-		<iframe src="https://mapsengine.google.com/map/embed?mid=z6XG8OR_zLGs.kbF9OSRyk6dQ" width="220" height="250"></iframe>
-	</div>
+        
+	      <div class="col-span-2">
+		      <a href="http://strands.acin.tuwien.ac.at/"><img src="http://strands.acin.tuwien.ac.at/logos/strands2.png"/></a>
+		      <p>
+			      <div class="fb-like" data-href="http://www.cs.bham.ac.uk/research/projects/strands/bob/marathon.html" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+			      <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+			      <g:plusone></g:plusone>
+			      <a href="https://twitter.com/share" class="twitter-share-button" data-via="BobStrands" data-related="strands_project" data-dnt="true">Tweet</a>
+			      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+		      </p>
+          
+	      </div>
+	      
+        <div class="col-span-4">
+          <a class="twitter-timeline" href="https://twitter.com/BobStrands"
+             data-widget-id="403528076920750080">Tweets by @BobStrands</a>
+          <script>!function(d,s,id){var
+            js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+        
+	      <div class="col-span-4">
+          <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/strands_project" data-widget-id="402373765784293377">Tweets by @strands_project</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+        
+	      <div class="col-span-2">
+		      <iframe src="https://mapsengine.google.com/map/embed?mid=zSg7wdf-c_sg.k4rNVQP74-VY" width="220" height="250"></iframe>
+	      </div>
+        
       </div>
--->
 
       <div class="row">
-        <!--<div class="col-span-6">
-          <h1><small>3D map</small></h1>
-          <div id="threed-map"></div>
-	  <i>Use your mouse to navigate the map. Due to a high load on the server you may have to reload this page, if you cannot see the robot on its map here.</i>
-        </div>-->
-        <div class="col-span-6">
+        <div class="col-span-9">
           <h1><small>Robot live cam</small></h1>
           <div id="mjpeg"></div>
-	  <i>The video is blurred to protect the privacy of our students and staff.</i>
+	        <i>The video is blurred to protect the privacy of our students and staff.</i>
+        </div>
+        <div class="col-span-3">
+          <h1><small>Robot map</small></h1>
+            <!--<div>
+              <img  src="./map.jpg" alt = "Lower ground floor of the Computer Science building"/></div>-->
+            <div id="map-canvas" ></div><br/>
+            <i>The map shows the lower ground floor of the Computer Science building.</i>
         </div>
       </div>
-<!--
-      <div class="row" id="misc-data">
-	<h1><small>Mileage</small></h1>
-        <div id="mileage">Mileage</div>
-      </div>
--->
-      <!-- Pose Table
-      <div class="row" id="pose-data">
-        <div class="col-span-12">
-          <h1><small>Robot's Pose</small></h1>
-          <table id="poses" class="table table-condensed">
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Position</th>
-                <th>Orientation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
- -->
       
-    </div>
+      <div class="row">
+        <div class="col-span-6">
+  	      <h1><small>Bob's Current Tour</small></h1>
+	        <div id="status">Loading ...</div>
+	      </div>
+        <div class="col-span-3">
+          <h1><small>Current status</small></h1>
+            <div id="battery" style="font-weight:normal;"></div>          
+            <div id="charging" style="font-weight:normal;"></div>
+            <div id="bumper" style="font-weight:normal;"></div>
+            <div id="mileage" style="font-weight:normal;"></div>              
+        </div>
+      </div>
 
+      <!-- Make some space at the bottom of the page -->
+      <p/>
+      
+    </div> 
   </body>
 </html>

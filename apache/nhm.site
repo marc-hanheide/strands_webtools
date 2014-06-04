@@ -10,34 +10,12 @@
 		Options -Indexes		
 	
 	</Directory>
-	#ServerName marcs-pc
 	RewriteEngine On
-	#LogLevel debug
 	Options -Indexes
 	# proxy for rosbridge
 	RewriteRule ^/linda/video http://localhost:8181/ [P]
         ProxyPass /linda/rosws ws://localhost:9090/
     	ProxyPassReverse /linda/rosws ws://localhost:9090/	
-
-
-
-	ProxyPass         /jenkins  http://localhost:8080/jenkins
-	ProxyPassReverse  /jenkins  http://localhost:8080/jenkins
-	ProxyRequests     Off
-
-	
-	Alias /awstatsclasses "/usr/share/awstats/lib/"
-	Alias /awstats-icon "/usr/share/awstats/icon/"
-	Alias /awstatscss "/usr/share/doc/awstats/examples/css"
-	ScriptAlias /awstats/ /usr/lib/cgi-bin/
-	<Directory /usr>
-		order deny,allow
-		deny from all
-		allow from 127.0.0
-		allow from 10.0.0.0/8
-
-		Options ExecCGI -MultiViews +SymLinksIfOwnerMatch
-	</Directory>
 
 	RewriteCond %{HTTP_USER_AGENT} "android|blackberry|googlebot-mobile|iemobile|ipad|iphone|ipod|opera mobile|palmos|webos" [NC]
 	RewriteRule ^/linda/linda.html$ /linda/linda-mobile.html [L,R=302]

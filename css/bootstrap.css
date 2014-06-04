@@ -289,7 +289,7 @@ html {
 
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 20px;
   line-height: 20px;
   color: #333333;
   background-color: #ffffff;
@@ -846,7 +846,7 @@ pre code {
 
 @media screen and (min-width: 768px) {
   .container {
-    max-width: 728px;
+    max-width: 1280px;
   }
   [class*="col-span-"] {
     float: left;

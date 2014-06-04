@@ -11,7 +11,7 @@ sudo install -d $apache_doc_root
 
 installdirs="css keyboardteleopjs mjpegcanvasjs nav2djs ros2djs ros3djs roslibjs js"
 for d in $installdirs; do
-	sudo cp -af $webtools/$d/ $apache_doc_root/$d
+	sudo cp -af $webtools/$d $apache_doc_root/
 done
 
 find $webtools -name "build" -type d | xargs -i sudo cp --parents -af {} $apache_doc_root/

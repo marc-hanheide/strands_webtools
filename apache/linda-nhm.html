@@ -66,9 +66,9 @@
 				var estDischargeTime = 11 * (message.lifePercent - 30);
 				var chargingText = '';
 				if (message.charging) {
-					chargingText = 'Linda is currently <b>recharging</b> at a current of ' + (-message.current.toFixed(1)) + ' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>';
+					chargingText = 'Linda is currently <b>recharging</b> at a current of ' + (-message.current.toFixed(1)) + ' Amperes. <br/>Her current charging level is <b>' + message.lifePercent + '%</b>';
 				} else {
-					chargingText = 'Linda is currently <b>running on battery</b> drawing a current of ' + (message.current.toFixed(1)) + ' Amperes. Her current charging level is <b>' + message.lifePercent + '%</b>. ';
+					chargingText = 'Linda is currently <b>running on battery</b> drawing a current of ' + (message.current.toFixed(1)) + ' Amperes. <br/>Her current charging level is <b>' + message.lifePercent + '%</b>. ';
 				}
 
 				$('#battery').html(chargingText);
@@ -133,9 +133,9 @@
 
         // marker for the robot
         var robotMarker = new ROS2D.NavigationArrow({
-          size : 8,
-          strokeSize : 1,
-          fillColor : createjs.Graphics.getRGB(255, 128, 0, 0.66),
+          size : 12,
+          strokeSize : 2,
+          fillColor : createjs.Graphics.getRGB(0, 0, 128, 1),
           pulse : false
         });
 
@@ -194,8 +194,8 @@
       <br/>
   -->
   <div class="row">
-  	<H1>
-  		<i>Robots on Patrol</i> - Linda
+  	<H1 style="text-align: center;">
+  		<b><i>Robots on Patrol</i> - Linda</b>
   	</H1>
   	<br/>
   	<div class="col-span-3">
@@ -229,15 +229,24 @@
   			<div id="nav"></div>
   		</div>
   	</div>
-  	<div class="col-span-3" style="background: rgba(36,36,36,1);border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;-webkit-border-radius: 10px 10px 10px 10px;border: 0px solid #000000;">
+  	<div class="col-span-3"style="background: rgba(36,36,36,1);border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;-webkit-border-radius: 10px 10px 10px 10px;border: 0px solid #000000;">
   		<H3>Linda's latest tweets at <b>@LindaStrands</b> <img src="https://g.twimg.com/Twitter_logo_blue.png" width="30px"/></H3>
-  		<a class="twitter-timeline" href="https://twitter.com/LindaStrands" width="450" height="700" data-chrome="nofooter transparent noheader noscrollbar" data-widget-id="474206422993866754">Tweets by @LindaStrands</a>
+  		<a class="twitter-timeline" href="https://twitter.com/LindaStrands" width="450" height="830" data-chrome="nofooter transparent noheader noscrollbar" data-widget-id="474206422993866754">Tweets by @LindaStrands</a>
   		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
   	</div>
-  	<div class="col-span-2">
-  		<p>If you want to see yourself tweeted by Linda, find her and hold your "Robots on Patrol" lanyard card for her to see!</p>
-  		<img src="lanyard-card.png" width="100%"/>
+  	<div class="col-span-2" style="padding: 5px;">
+  		<div style="color: #002147; padding: 5px; background: rgba(200,200,220,1);border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;-webkit-border-radius: 10px 10px 10px 10px;border: 0px solid #000000;">
+  	    	<h3>Make LINDA tweet a picture of YOU!</h3>
+  			<p>If you want to see a picture of yourself tweeted by Linda, find her and hold your "Robots on Patrol" lanyard card for her to see!</p>
+  			<img  src="lanyard-card.png" width="100%"/>
+  		</div>
+  		<p/>
+  		<div style="color: #002147; padding: 5px; background: rgba(200,200,220,1);border-radius: 10px 10px 10px 10px;-moz-border-radius: 10px 10px 10px 10px;-webkit-border-radius: 10px 10px 10px 10px;border: 0px solid #000000;">
+  	    	<h3>Give LINDA a job!</h3>
+  			<p>Find her and give her task to do by clicking on her touch screen.</p>
+  			<img  src="nhm-map.png" width="100%"/>
+  		</div>
   	</div>
   </div>
 

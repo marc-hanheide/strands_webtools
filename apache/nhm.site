@@ -13,9 +13,9 @@
 	RewriteEngine On
 	Options -Indexes
 	# proxy for rosbridge
-	RewriteRule ^/linda/video http://localhost:8181/ [P]
-        ProxyPass /linda/rosws ws://localhost:9090/
-    	ProxyPassReverse /linda/rosws ws://localhost:9090/	
+	RewriteRule ^/linda/video http://10.82.0.43:8080/ [P]
+        ProxyPass /linda/rosws ws://10.82.0.43:9090/
+    	ProxyPassReverse /linda/rosws ws://10.82.0.43:9090/	
 
 	RewriteCond %{HTTP_USER_AGENT} "android|blackberry|googlebot-mobile|iemobile|ipad|iphone|ipod|opera mobile|palmos|webos" [NC]
 	RewriteRule ^/linda/linda.html$ /linda/linda-mobile.html [L,R=302]

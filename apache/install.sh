@@ -21,7 +21,7 @@ sudo install -d $apache_doc_root/scitos_description
 
 sudo cp -af $scitos_desc/meshes $apache_doc_root/scitos_description
 
-sudo install -p *.png *.html $apache_doc_root
+sudo install -p *.css *.jpg *.png *.html $apache_doc_root
 
 sudo chown -R www-data:www-data $apache_doc_root
 
